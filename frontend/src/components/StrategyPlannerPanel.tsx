@@ -1,57 +1,114 @@
 import React, { useState, useEffect } from 'react';
 
-export const StrategyPlannerPanel: React.FC = () => {
-  const [strategy, setStrategy] = useState('momentum');
-  const [platform, setPlatform] = useState('deriv');
-  const [flash, setFlash] = useState(false);
-  const [booster, setBooster] = useState(false);
+interface PlannerProps {
+  platform: string;
+  currentStrategy: string;
+  strategies: string[];
+  onSwitch: (strategy: string) => void;
+  onPause: () => void;
+  onSetGoal: (profit: number, deadline: number) => void;
+  onToggleFlashMode: () => void;
+  onToggleLearningBooster: () => void;
+  flashMode: boolean;
+  learningBooster: boolean;
+}
 
-  useEffect(() => {
-    fetch(`/api/strategy/${platform}`)
-      .then(res => res.json())
-      .then(data => {
-        setStrategy(data.strategy || 'momentum');
-        setFlash(data.flashMode || false);
-        setBooster(data.learningBooster || false);
-      });
-  }, [platform]);
+export const StrategyPlannerPanel: React.FC<PlannerProps> = ({
+  platform,
+  currentStrategy,
+  strategies,
+  onSwitch,
+  onPause,
+  onSetGoal,
+  onToggleFlashMode,
+  onToggleLearningBooster,
+  flashMode,
+  learningBooster,
+}) => {
+  const [goal, setGoal] = useState<number>(0);
+  const [deadline, setDeadline] = useState<number>(60);
 
-  const update = () => {
-    fetch(`/api/strategy/${platform}`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ strategy, flashMode: flash, learningBooster: booster }),
-    });
+  const submitGoal = () => {
+    if (goal > 0 && deadline > 0) {
+      onSetGoal(goal, deadline);
+    }
   };
 
   return (
-    <div className="bg-black text-white p-4 rounded-xl border border-orange-500 shadow">
-      <h2 className="text-lg font-bold text-orange-400 mb-2">📊 Strategy Planner</h2>
-      <select value={platform} onChange={e => setPlatform(e.target.value)} className="mb-2 p-2 bg-black border border-orange-500">
-        <option value="deriv">Deriv</option>
-        <option value="iqoption">IQ Option</option>
-        <option value="mt5">MT5</option>
-      </select>
-      <select value={strategy} onChange={e => setStrategy(e.target.value)} className="mb-2 p-2 w-full bg-black border border-orange-500">
-        <option value="momentum">Momentum</option>
-        <option value="reversal">Reversal</option>
-        <option value="swing">Swing</option>
-        <option value="scalping">Scalping</option>
-        <option value="adaptive">Adaptive (Smart)</option>
-      </select>
-      <div className="flex items-center gap-2 mb-2">
-        <label>
-          <input type="checkbox" checked={flash} onChange={() => setFlash(!flash)} />
-          Flash Mode
-        </label>
-        <label>
-          <input type="checkbox" checked={booster} onChange={() => setBooster(!booster)} />
-          Learning Booster
-        </label>
+    <div className="bg-zinc-900 text-white rounded-lg p-4 mt-6 border border-orange-500 shadow-xl">
+      <h2 className="text-orange-400 text-lg font-bold mb-2">
+        🎯 Strategy Planner ({platform})
+      </h2>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+        <div>
+          <label className="text-zinc-300 block mb-1">Current Strategy</label>
+          <div className="bg-black border border-zinc-700 rounded px-3 py-2">{currentStrategy}</div>
+        </div>
+
+        <div>
+          <label className="text-zinc-300 block mb-1">Switch Strategy</label>
+          <select
+            className="w-full bg-black text-white border border-zinc-700 rounded px-3 py-2"
+            onChange={(e) => onSwitch(e.target.value)}
+          >
+            {strategies.map((s) => (
+              <option key={s} value={s}>
+                {s}
+              </option>
+            ))}
+          </select>
+        </div>
+
+        <div>
+          <label className="text-zinc-300 block mb-1">Goal Profit ($)</label>
+          <input
+            type="number"
+            className="w-full bg-black text-white border border-zinc-700 rounded px-3 py-2"
+            value={goal}
+            onChange={(e) => setGoal(Number(e.target.value))}
+            placeholder="e.g. 10"
+          />
+        </div>
+
+        <div>
+          <label className="text-zinc-300 block mb-1">Deadline (min)</label>
+          <input
+            type="number"
+            className="w-full bg-black text-white border border-zinc-700 rounded px-3 py-2"
+            value={deadline}
+            onChange={(e) => setDeadline(Number(e.target.value))}
+            placeholder="e.g. 60"
+          />
+        </div>
+
+        <div className="col-span-1 md:col-span-2 flex items-center justify-between mt-3">
+          <button
+            onClick={submitGoal}
+            className="bg-orange-500 hover:bg-orange-600 text-black font-bold py-1 px-4 rounded"
+          >
+            Set Goal
+          </button>
+
+          <button
+            onClick={onPause}
+            className="bg-red-500 hover:bg-red-600 text-white font-bold py-1 px-4 rounded"
+          >
+            Pause Strategy
+          </button>
+        </div>
+
+        <div className="col-span-1 md:col-span-2 mt-4 flex items-center gap-4">
+          <label className="flex items-center gap-2">
+            <input type="checkbox" checked={flashMode} onChange={onToggleFlashMode} />
+            <span className="text-orange-300">⚡ Flash Mode</span>
+          </label>
+          <label className="flex items-center gap-2">
+            <input type="checkbox" checked={learningBooster} onChange={onToggleLearningBooster} />
+            <span className="text-green-400">📚 Learning Booster</span>
+          </label>
+        </div>
       </div>
-      <button onClick={update} className="bg-orange-500 hover:bg-orange-600 text-black font-bold py-2 px-4 rounded-xl">
-        Update Strategy
-      </button>
     </div>
   );
 };
