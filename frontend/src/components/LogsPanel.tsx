@@ -1,43 +1,47 @@
 import React, { useEffect, useState } from 'react';
+import { getLogs } from '../api/logs';
 
 interface LogEntry {
   timestamp: string;
+  type: string;
   message: string;
 }
 
-export const LogsPanel: React.FC = () => {
+interface Props {
+  platform: string;
+}
+
+const LogsPanel: React.FC<Props> = ({ platform }) => {
   const [logs, setLogs] = useState<LogEntry[]>([]);
 
-  const fetchLogs = async () => {
-    try {
-      const response = await fetch('/api/logs');
-      const data = await response.json();
-      setLogs(data.logs || []);
-    } catch (error) {
-      console.error('Failed to fetch logs:', error);
-    }
-  };
-
   useEffect(() => {
+    const fetchLogs = async () => {
+      try {
+        const result = await getLogs(platform);
+        setLogs(result.reverse()); // show latest first
+      } catch (err) {
+        console.error('Failed to fetch logs:', err);
+      }
+    };
     fetchLogs();
-    const interval = setInterval(fetchLogs, 5000);
+    const interval = setInterval(fetchLogs, 8000);
     return () => clearInterval(interval);
-  }, []);
+  }, [platform]);
 
   return (
-    <div className="bg-black border border-orange-500 rounded-2xl p-4 mt-4 shadow-xl text-white">
-      <h2 className="text-lg font-bold text-orange-400 mb-2">📜 Strategy & Trade Logs</h2>
-      <div className="h-48 overflow-y-auto bg-gray-900 p-2 rounded-md text-sm">
-        {logs.length === 0 ? (
-          <p className="text-gray-400">No logs yet.</p>
-        ) : (
-          logs.map((log, index) => (
-            <div key={index} className="mb-1 text-white">
-              <span className="text-orange-300">[{log.timestamp}]</span> {log.message}
-            </div>
-          ))
-        )}
-      </div>
+    <div className="bg-black text-white p-4 rounded-2xl shadow-md max-h-96 overflow-y-auto">
+      <h2 className="text-lg font-bold mb-2">📜 Activity Logs</h2>
+      <ul className="text-sm space-y-1">
+        {logs.map((log, index) => (
+          <li key={index} className="border-b border-gray-700 pb-1">
+            <span className="text-gray-400 mr-2">[{new Date(log.timestamp).toLocaleTimeString()}]</span>
+            <span className="text-orange-400 font-semibold mr-1">{log.type.toUpperCase()}:</span>
+            <span>{log.message}</span>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 };
+
+export default LogsPanel;
