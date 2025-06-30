@@ -1,17 +1,22 @@
 // frontend/tailwind.config.ts
-import type { Config } from 'tailwindcss'
+import type { Config } from 'tailwindcss';
 
 const config: Config = {
-  content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
+  content: [
+    './index.html',
+    './src/**/*.{js,ts,jsx,tsx}',
+  ],
   theme: {
     extend: {
       colors: {
-        primary: '#ff3c00',
-        secondary: '#ff6f00',
+        primary: '#FF4500',
+        dark: '#000000',
+        light: '#f5f5f5',
       },
     },
   },
-  darkMode: 'class',
+  darkMode: 'media',
   plugins: [],
-}
-export default config
+};
+
+export default config;
