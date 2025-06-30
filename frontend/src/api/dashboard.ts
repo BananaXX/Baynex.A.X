@@ -1,21 +1,43 @@
 // frontend/src/api/dashboard.ts
+const BASE_URL = 'https://baynex-bot-1.onrender.com';
 
 export const getDashboardData = async () => {
-  const response = await fetch('https://baynex-bot-1.onrender.com/api/status');
-  return await response.json();
+  const res = await fetch(`${BASE_URL}/status`);
+  return await res.json();
 };
 
-export const updateStrategyPlan = async (plan: {
-  strategy: string;
-  target: number;
-  deadline: string;
-  flashMode: boolean;
-  learningBooster: boolean;
-}) => {
-  const response = await fetch('https://baynex-bot-1.onrender.com/api/plan', {
+export const sendCommand = async (command: string) => {
+  const res = await fetch(`${BASE_URL}/command`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(plan),
+    body: JSON.stringify({ command }),
   });
-  return await response.json();
+  return await res.json();
+};
+
+export const updateStrategy = async (strategy: string) => {
+  const res = await fetch(`${BASE_URL}/strategy`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ strategy }),
+  });
+  return await res.json();
+};
+
+export const updateVoiceMode = async (mode: string) => {
+  const res = await fetch(`${BASE_URL}/voice-mode`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ mode }),
+  });
+  return await res.json();
+};
+
+export const updateGoal = async (target: number, deadline: string) => {
+  const res = await fetch(`${BASE_URL}/goal`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ target, deadline }),
+  });
+  return await res.json();
 };
