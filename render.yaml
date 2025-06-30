@@ -1,38 +1,20 @@
 services:
   - type: web
-    name: baynex-frontend
-    env: node
-    buildCommand: cd frontend && npm install && npm run build
-    startCommand: cd frontend && npm run preview
-    staticPublishPath: frontend/dist
-    envVars:
-      - key: VITE_FIREBASE_API_KEY
-        fromEnvVar: VITE_FIREBASE_API_KEY
-      - key: VITE_FIREBASE_PROJECT_ID
-        fromEnvVar: VITE_FIREBASE_PROJECT_ID
-      - key: VITE_FIREBASE_APP_ID
-        fromEnvVar: VITE_FIREBASE_APP_ID
-      - key: VITE_OPENAI_API_KEY
-        fromEnvVar: OPENAI_API_KEY
-
-  - type: web
     name: baynex-backend
-    env: node
-    buildCommand: cd backend && npm install && npm run build
-    startCommand: cd backend && npm run start
-    autoDeploy: true
+    rootDir: backend
+    buildCommand: npm install && npm run build
+    startCommand: npm run start
     envVars:
       - key: DERIV_API_TOKEN
-        fromEnvVar: DERIV_API_TOKEN
-      - key: DERIV_APP_ID
-        fromEnvVar: DERIV_APP_ID
+        value: your_token_here
       - key: TELEGRAM_BOT_TOKEN
-        fromEnvVar: TELEGRAM_BOT_TOKEN
-      - key: TELEGRAM_CHAT_ID
-        fromEnvVar: TELEGRAM_CHAT_ID
-      - key: WHATSAPP_API_KEY
-        fromEnvVar: WHATSAPP_API_KEY
-      - key: WHATSAPP_NUMBER
-        fromEnvVar: WHATSAPP_NUMBER
-      - key: OPENAI_API_KEY
-        fromEnvVar: OPENAI_API_KEY
+        value: your_token_here
+
+  - type: web
+    name: baynex-frontend
+    rootDir: frontend
+    buildCommand: npm install && npm run build
+    startCommand: npm run preview -- --port 3000
+    envVars:
+      - key: VITE_FIREBASE_API_KEY
+        value: your_key_here
