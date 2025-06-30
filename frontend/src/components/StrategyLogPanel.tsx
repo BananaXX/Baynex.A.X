@@ -1,47 +1,33 @@
 import React from 'react';
 
 interface LogEntry {
-  timestamp: string;
-  type: 'trade' | 'switch' | 'voice' | 'goal' | 'error';
+  time: string;
   message: string;
+  type?: 'info' | 'success' | 'error' | 'warning';
 }
 
-interface Props {
+interface LogPanelProps {
   logs: LogEntry[];
 }
 
-export const StrategyLogPanel: React.FC<Props> = ({ logs }) => {
-  const getTypeStyle = (type: LogEntry['type']) => {
-    switch (type) {
-      case 'trade':
-        return 'text-green-400';
-      case 'switch':
-        return 'text-orange-400';
-      case 'voice':
-        return 'text-yellow-300';
-      case 'goal':
-        return 'text-blue-400';
-      case 'error':
-        return 'text-red-500';
-      default:
-        return 'text-white';
-    }
-  };
+const typeColors = {
+  info: 'text-blue-400',
+  success: 'text-green-400',
+  error: 'text-red-400',
+  warning: 'text-yellow-400',
+};
 
+export default function LogPanel({ logs }: LogPanelProps) {
   return (
-    <div className="mt-6 text-white">
-      <h2 className="text-orange-400 text-lg font-semibold mb-2">📝 Strategy Logs</h2>
-      <div className="bg-black border border-orange-600 rounded p-3 h-64 overflow-y-scroll text-sm">
-        {logs.length === 0 ? (
-          <p className="text-gray-500">No logs yet.</p>
-        ) : (
-          logs.map((log, index) => (
-            <div key={index} className={`mb-1 ${getTypeStyle(log.type)}`}>
-              [{log.timestamp}] {log.message}
-            </div>
-          ))
-        )}
-      </div>
+    <div className="bg-black border border-gray-800 rounded-xl p-4 mt-4 h-64 overflow-y-auto">
+      <h3 className="text-lg font-bold text-white mb-2">📜 Baynex Logs</h3>
+      <ul className="space-y-1 text-sm">
+        {logs.map((log, i) => (
+          <li key={i} className={`whitespace-pre-wrap ${typeColors[log.type || 'info']}`}>
+            <span className="text-gray-400 mr-2">[{log.time}]</span> {log.message}
+          </li>
+        ))}
+      </ul>
     </div>
   );
-};
+}
