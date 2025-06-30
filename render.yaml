@@ -1,0 +1,10 @@
+# render.yaml
+services:
+  - type: web
+    name: baynex-web
+    env: node
+    buildCommand: cd frontend && npm install && npm run build
+    startCommand: cd frontend && npm run preview
+    envVars:
+      - key: NODE_VERSION
+        value: 20
