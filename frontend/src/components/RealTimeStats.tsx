@@ -1,16 +1,3 @@
-/frontend/src/components/RealTimeStats.tsx — Displays Live Strategy Feedback Includes:
-
-Overall Profit/Loss (PnL)
-
-Win Rate
-
-Active Trades
-
-Per-strategy win stats
-
-Timeframe filter (Today, Week, Month)
-
-
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 
@@ -87,4 +74,3 @@ const RealTimeStats = () => {
 };
 
 export default RealTimeStats;
-
