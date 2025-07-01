@@ -1,6 +1,6 @@
 // backend/src/routes.ts
 import { Express } from 'express';
-import logsRouter from './routes/logs';
+import logsRouter from '../routes/logs';
 
 export function setupRoutes(app: Express) {
   app.get('/', (req, res) => {
