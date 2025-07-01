@@ -1,8 +1,10 @@
 // frontend/src/api/dashboard.ts
 
+const BASE_URL = import.meta.env.VITE_BACKEND_URL;
+
 export const getDashboardData = async () => {
   try {
-    const res = await fetch('https://baynex-bot-1.onrender.com/api/status');
+    const res = await fetch(`${BASE_URL}/api/status`);
     const data = await res.json();
     return data;
   } catch (err) {
@@ -19,7 +21,7 @@ export const updatePlannerSettings = async (settings: {
   learningBooster: boolean;
 }) => {
   try {
-    const res = await fetch('https://baynex-bot-1.onrender.com/api/planner', {
+    const res = await fetch(`${BASE_URL}/api/planner`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(settings),
