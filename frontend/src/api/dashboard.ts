@@ -1,3 +1,5 @@
+// frontend/src/api/dashboard.ts
+
 const BASE_URL = import.meta.env.VITE_BACKEND_URL;
 
 export const getDashboardData = async () => {
