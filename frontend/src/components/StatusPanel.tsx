@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 
-const BACKEND_URL = 'https://baynex-bot-1.onrender.com';
+const BACKEND_URL = import.meta.env.VITE_BACKEND_URL;
 
 const StatusPanel: React.FC = () => {
   const [status, setStatus] = useState<string>('Checking...');
